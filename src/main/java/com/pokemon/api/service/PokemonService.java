@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
@@ -20,13 +21,14 @@ import com.pokemon.api.repository.PokemonRepository;
 @Service
 public class PokemonService {
 
-	String uri = "https://pokeapi.co/api/v2/pokemon/";
+	@Value("${api.pokemon}")
+	private String uri;
 
 	@Autowired
-	PokedexRepository pokedexRepository;
+	private PokedexRepository pokedexRepository;
 
 	@Autowired
-	PokemonRepository pokemonRepository;
+	private PokemonRepository pokemonRepository;
 
 	public List<PokemonDTO> getAll(Integer size, Integer page) throws RestClientException {
 
