@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import com.pokemon.api.model.PokemonAPI;
@@ -27,7 +28,7 @@ public class PokemonService {
 	@Autowired
 	PokemonRepository pokemonRepository;
 
-	public List<PokemonDTO> getAll(Integer size, Integer page) {
+	public List<PokemonDTO> getAll(Integer size, Integer page) throws RestClientException {
 
 		int offset = page * size;
 		RestTemplate restTemplate = new RestTemplate();
@@ -53,14 +54,12 @@ public class PokemonService {
 
 	}
 
-	public Pokedex getUser(String name) {
-		if (name == null)
-			name = "omar";
-
-		return pokedexRepository.findByNombreUsuario(name);
+	public Pokedex getUser(String user) {
+		return pokedexRepository.findByNombreUsuario(user);
 	}
 
-	public Pokedex addPokemon(Pokedex pokedex, Pokemon pokemon) {
+	public Pokedex addPokemon(String user, Pokemon pokemon) throws IllegalArgumentException {
+		Pokedex  pokedex = pokedexRepository.findByNombreUsuario(user);
 		pokemon.setNumeroPokedex(pokedex.getNumeroPokedex());
 		pokemonRepository.save(pokemon);
 		return pokedexRepository.findById(pokedex.getNumeroPokedex()).get();
@@ -72,7 +71,10 @@ public class PokemonService {
 	}
 	
 	public Pokedex updatePokemon(String usuario, Pokemon pokemon) {
-		pokemonRepository.save(pokemon);
+		Pokemon pokemonDB = pokemonRepository.findById(pokemon.getId()).get();
+		pokemonDB.setNature(pokemon.getNature());
+		pokemonDB.setShiny(pokemon.getShiny());
+		pokemonRepository.save(pokemonDB);
 		return pokedexRepository.findByNombreUsuario(usuario);
 	}
 }

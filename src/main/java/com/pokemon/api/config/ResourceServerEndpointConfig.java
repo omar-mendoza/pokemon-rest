@@ -12,11 +12,10 @@ public class ResourceServerEndpointConfig extends ResourceServerConfigurerAdapte
 
 	@Override
 	public void configure(HttpSecurity http) throws Exception {
-//		http.authorizeRequests().antMatchers("/pokemon/**").hasAuthority("USER");
 
-		http.requestMatchers().antMatchers("/apis/**")  //  Denegamos el acceso a "/privada"
+		http.requestMatchers().antMatchers("/api/**")  //  Denegamos el acceso a "/privada"
 		.and().authorizeRequests()
-		.antMatchers("/apis/**").access("hasRole('USER')");
+		.antMatchers("/api/**").access("hasRole('USER')");
 	}
 	
 	@Bean
@@ -26,7 +25,6 @@ public class ResourceServerEndpointConfig extends ResourceServerConfigurerAdapte
 		remoteTokenService.setClientId("poke_user");
 		remoteTokenService.setClientSecret("password_poke");
 		remoteTokenService.setCheckTokenEndpointUrl("http://localhost:8090/oauth/check_token");
-		
 		
 		return remoteTokenService;
 	}
